@@ -1,4 +1,5 @@
-our $VERSION = 0.02;
+package RTx::Tags;
+our $VERSION = 0.021;
 1;
 __END__
 
