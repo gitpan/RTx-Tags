@@ -1,4 +1,15 @@
 0.01 2008-09-8&14
 	Local modifications
+
 0.02 2008-09-14
 	Convert to plugin
+
+0.04 2008-09-15
+	Added <p> around Simple Search blurb
+
+	Fixed typo in keyword matching that meant some rare strings might be
+	misinterpreted as custom field searches.
+
+	Created a Googleish_Local overlay to avoid the need for patching
+
+	Updated documentation

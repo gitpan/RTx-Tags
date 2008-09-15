@@ -1,4 +1,4 @@
-Searching custom field values can be done with <strong>.<em>CFieldName</em>:<em>keyword</em></strong> e.g; <tt>.tags:spam</tt>. Alternatively for tags, use the cloud of links below:
+<p>Searching custom field values can be done with <strong>.<em>CFieldName</em>:<em>keyword</em></strong> e.g; <tt>.tags:spam</tt>. Alternatively for tags, use the cloud of links below:</p>
 <div class="titlebox" style="margin:0 10%; padding-bottom: 1em">
 <div class="titlebox-title"><span class="left">Tag Cloud</span></div>
 % print $cloud->html();

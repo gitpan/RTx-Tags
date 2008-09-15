@@ -2,7 +2,7 @@ use inc::Module::Install;
 
 RTx('RTx-Tags');
 author('Jerrad Pierce <jpierce@cpan.org>');
-abstract('Tag cloud');
+abstract('Tag cloud and simple searchable custom fields');
 license('perl');
 
 requires 'HTML::TagCloud'      => 0;

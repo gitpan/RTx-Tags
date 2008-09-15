@@ -7,7 +7,7 @@ html/Callbacks/RTx-Tags/Elements/Header/Head
 html/Callbacks/RTx-Tags/Search/Simple.html/PreForm
 html/NoAuth/css/cloud.css
 lib/RTx/Tags.pm
-patch
+lib/RT/Search/Googleish_Local.pm
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm

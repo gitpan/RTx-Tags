@@ -1,9 +1,9 @@
 package RTx::Tags;
-our $VERSION = 0.021;
-1;
+our $VERSION = 0.04;
+"Truthiness";
 __END__
 
-=head1 RTx::Tags
+=head1 NAME
 
 Tag Cloud support for RT with simple-searchable custom fields.
 
@@ -16,7 +16,7 @@ field.
 
 In addition to the cloud, documentation for using the Simple Searchable
 Custom Fields patch is included on the page, since the patch is required
-in order for the cloud links to work.
+in order for the cloud anchors to work.
 
 =head1 INSTALL
 
@@ -30,50 +30,47 @@ Install HTML::TagCloud
 
 Install this module i.e; extract to local/plugins/RTx-Tags & ammend SiteConfig
 
+These first steps may be accomplished via CPAN(PLUS) with auto-dependencies.
+
 =item #
 
-Apply the following patch; for RT 3.8.1
-
-  --- /tmp/Googleish.pm   2008-09-08 12:37:19.000000000 -0400
-  +++ lib/RT/Search/Googleish.pm  2008-09-08 12:44:21.000000000 -0400
-  @@ -141,6 +141,10 @@
-      push @owner_clauses, "Owner = '" . $User->Name . "'";
-  }
- 
-  +        elsif ( $key =~ /.(\w+):(\w+)/i ) {
-  +            push @user_clauses, "CF.{$1} LIKE '$2'";
-  +        }
-  +
-           # Else, subject must contain $key
-      else {
-               $key =~ s/['\\].*//g;
-  [
+No patching necessary! If you've previously applied the SearchCustomField,
+or installed version 0.021 of this module, it is recomended that you revert
+the patch. No harm will come from not doing so, but better to keep RT core
+files vanilla where possible.
 
 =item #
 
 Create a Custom Field named C<Tags>. The recommended type is "Enter one value,"
-with "applies to Tickets." The recommended Description is "Freeform annotation
-for ready searching,"
+with "Applies to Tickets." The recommended Description is "Freeform annotation
+for ready searching."
 
 =item #
 
-Apply the Custom Field to the desired queue.
+Apply the Custom Field to the desired queue(s).
 
 =back
 
-=head1 BUGS
+=head1 CAVEATS
 
 =over
 
 =item *
 
-Due to limitations in the available callbacks, the CF search blurb and
-tags cloud are output before the core search mechanism blurbs.
+Due to limitations in the available callbacks, the CF search blurb and tags
+cloud are output before the core search mechanism blurbs; postform is ugly.
 
 =item *
 
-Due to limitations in the available callbacks, every page loads the cloud css,
+Due to limitations in the available callbacks, every page links to cloud.css,
 which has also been hard-coded to 26 levels.
+
+=item *
+
+Due to the mechanism used to implement the CF search, the presence of another
+Search/Googleish_Local.pm will likely not result in behavior you desire.
+Should you wish to make further local customizations, either modify this
+module's code, or use Googleish_Vendor.pm
 
 =back
 
