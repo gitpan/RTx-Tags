@@ -6,6 +6,7 @@
 <%INIT>
   use HTML::TagCloud;
 
+  my %tags;
   my $r = $RT::Handle->SimpleQuery(<<EOQ
 SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' GROUP BY ObjectCustomFieldValues.Content
 EOQ
@@ -15,9 +16,13 @@ EOQ
 
   my $cloud = HTML::TagCloud->new;
   while( my $row = $r->fetchrow_arrayref ) {
-    foreach my $k ( split/[,;]?\s+/, $row->[1] ){
-      $cloud->add($k, "/Search/Simple.html?q=.tags%3A$k", $row->[0]);
+    foreach my $k ( split/[,;\s]+/, $row->[1] ){
+      $tags{$k} += $row->[0];
     }
   }
+  foreach my $k ( keys %tags ){
+      $cloud->add($k, "/Search/Simple.html?q=.tags%3A$k", $tags{$k});
+  }
+
   return (0, "Internal error: <". $r->err .">. Please send bug report.") if $r->err;
 </%INIT>

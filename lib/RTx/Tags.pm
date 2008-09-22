@@ -1,5 +1,5 @@
 package RTx::Tags;
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 "Truthiness";
 __END__
 
@@ -14,9 +14,9 @@ Search/Simple.html The cloud consists of the values (split on commas,
 semi-colons and whitespace) for B<all objects> with the C<Tags> custom
 field.
 
-In addition to the cloud, documentation for using the Simple Searchable
-Custom Fields patch is included on the page, since the patch is required
-in order for the cloud anchors to work.
+In addition to the cloud, this module provides support for Simple Searchable
+Custom Fields witha Local overlay. An explanation of this feature is also
+shown on Search/Simple.html
 
 =head1 INSTALL
 
