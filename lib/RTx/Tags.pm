@@ -1,5 +1,5 @@
 package RTx::Tags;
-our $VERSION = 0.05;
+our $VERSION = 0.06;
 "Truthiness";
 __END__
 

@@ -15,7 +15,8 @@ my $core = \&RT::Search::Googleish::QueryToSQL;
 
   #Stupid space to overcome damn test for empty query in Googleish.pm
   my $ret = $core->($self, $query||' ', @_);
-  return $ret . ' AND ' . join(' AND ', @CF);
+  $ret .= ' AND ' . join(' AND ', @CF) if scalar @CF;
+  return $ret;
 };
 
 1;

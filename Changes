@@ -8,7 +8,7 @@
 	Added <p> around Simple Search blurb.
 
 	Fixed typo in keyword matching that meant some rare strings might
- 	be misinterpreted as custom field searches.
+	be misinterpreted as custom field searches.
 
 	Created a Googleish_Local overlay to avoid the need for patching.
 
@@ -23,3 +23,7 @@
 
 	Update documentation DESCRIPTION to remove outdated information
 	about patching.
+
+0.06 2008-09-29
+	Fixed a bug that generated bad TicketSQL, and error log messages,
+	if no CFs were searched.
