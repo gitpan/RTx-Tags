@@ -1,4 +1,11 @@
-0.07
+0.08 2008-11-01
+	Fixed typo bug resulting from #40588 adjustment
+
+	Forgot to include the homepage component in .07
+
+	Fixed bug which caused unused tags to be displayed
+
+0.07 2008-11-01
 	Fixed bug #40587, include WebPath in URIs
 
 	Addressed wishlist #40588 to expand CF value searches beyond \w+

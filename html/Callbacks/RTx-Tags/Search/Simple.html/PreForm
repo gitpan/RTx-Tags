@@ -8,7 +8,7 @@
 
   my %tags;
   my $r = $RT::Handle->SimpleQuery(<<EOQ
-SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' GROUP BY ObjectCustomFieldValues.Content
+SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 GROUP BY ObjectCustomFieldValues.Content
 EOQ
 );
 

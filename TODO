@@ -5,3 +5,5 @@ Modify homepage component?
 
 MassageCustomFields to linkify on display?
 	Is this marginal convenience it worth the performance hit?
+
+Should display of unused tags be configurable, or listed separately?

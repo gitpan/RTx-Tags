@@ -9,7 +9,7 @@ my $core = \&RT::Search::Googleish::QueryToSQL;
   my $query = shift || $self->Argument;
 
   my @CF;
-  while( $query =~ s/\.(\w+):\S+// ){
+  while( $query =~ s/\.(\w+):(\S+)// ){
     push @CF, "CF.{$1} LIKE '$2'";
   }
 
