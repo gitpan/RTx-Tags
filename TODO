@@ -1,1 +1,7 @@
-Make an RT at a glance widget?
+Modify homepage component? 
+	Configurable: Show global tags and/or for selected queues
+
+ 	Cache tags
+
+MassageCustomFields to linkify on display?
+	Is this marginal convenience it worth the performance hit?

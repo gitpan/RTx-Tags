@@ -1,12 +1,11 @@
 use inc::Module::Install;
+requires 'HTML::TagCloud'      => 0;
 
-RTx('RTx-Tags');
 author('Jerrad Pierce <jpierce@cpan.org>');
 abstract('Tag cloud and simple searchable custom fields');
 license('perl');
 
-requires 'HTML::TagCloud'      => 0;
-
+RTx('RTx-Tags');
 WriteAll();
 
 sub MY::postamble {

@@ -1,11 +1,11 @@
 package RTx::Tags;
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 "Truthiness";
 __END__
 
 =head1 NAME
 
-Tag Cloud support for RT with simple-searchable custom fields.
+RTx::Tags - Tag Cloud support for RT with simple-searchable custom fields.
 
 =head1 DESCRIPTION
 
@@ -28,26 +28,33 @@ Install HTML::TagCloud
 
 =item #
 
-Install this module i.e; extract to local/plugins/RTx-Tags & ammend SiteConfig
+Install this module i.e; extract to F<local/plugins/RTx-Tags> & amend
+F<RT_SiteConfig.pm> to include I<RTx::Tags> to C<@Plugins>.
 
 These first steps may be accomplished via CPAN(PLUS) with auto-dependencies.
 
 =item #
 
-No patching necessary! If you've previously applied the SearchCustomField,
-or installed version 0.021 of this module, it is recomended that you revert
-the patch. No harm will come from not doing so, but better to keep RT core
-files vanilla where possible.
+No patching necessary! If you've previously applied  SearchCustomField from
+the wiki or email list, or installed version 0.021 of this module, it is
+recomended that you revert the patch. No harm will come from not doing so,
+but it's best to keep RT core files vanilla where possible.
 
 =item #
 
-Create a Custom Field named C<Tags>. The recommended type is "Enter one value,"
-with "Applies to Tickets." The recommended Description is "Freeform annotation
-for ready searching."
+Create a custom field named C<Tags>. The recommended type is I<Enter one value>
+with I<Applies to Tickets>. The recommended Description is
+I<Freeform annotation for ready searching>.
 
 =item #
 
 Apply the Custom Field to the desired queue(s).
+
+=item #
+
+Optionally add I<TagCloud> to C<$HomepageComponents> in F<RT_SiteConfig.pm> if
+you would like users to have the ability to display a Tag Cloud on the front
+page, and not just the Simple Search page.
 
 =back
 
@@ -58,7 +65,8 @@ Apply the Custom Field to the desired queue(s).
 =item *
 
 Due to limitations in the available callbacks, the CF search blurb and tags
-cloud are output before the core search mechanism blurbs; postform is ugly.
+cloud are output before the core search mechanism blurbs on Simple Search;
+postform is ugly.
 
 =item *
 

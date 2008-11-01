@@ -20,8 +20,10 @@ EOQ
       $tags{$k} += $row->[0];
     }
   }
+
+  my $base = RT->Config->Get('WebPath') . '/Search/Simple.html?q=.tags%3A';
   foreach my $k ( keys %tags ){
-      $cloud->add($k, "/Search/Simple.html?q=.tags%3A$k", $tags{$k});
+      $cloud->add($k, $base.$k, $tags{$k});
   }
 
   return (0, "Internal error: <". $r->err .">. Please send bug report.") if $r->err;

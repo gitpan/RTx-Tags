@@ -1,5 +1,5 @@
 package RT::Search::Googleish_Overlay;
-our $VERSION = 0.01;
+our $VERSION = 0.03; #Forgot to bump this before, in at least .05->.06
 
 #Hook::LexWrap won't let us tweak @_ sufficiently
 
@@ -9,7 +9,7 @@ my $core = \&RT::Search::Googleish::QueryToSQL;
   my $query = shift || $self->Argument;
 
   my @CF;
-  while( $query =~ s/\.(\w+):(\w+)// ){
+  while( $query =~ s/\.(\w+):\S+// ){
     push @CF, "CF.{$1} LIKE '$2'";
   }
 
@@ -29,7 +29,7 @@ RT::Search::Googleish_Local - Allow searching of custom fields
 =head1 DESCRIPTION
 
 Search for customfields with C<.>I<CFName>C<:>I<value>, where I<CFName>
-and I<value> match C<\w+>
+and I<value> match C<\S+>
 
 =head1 LICENSE
 
