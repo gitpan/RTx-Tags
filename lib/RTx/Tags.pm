@@ -1,5 +1,108 @@
 package RTx::Tags;
-our $VERSION = 0.08;
+our $VERSION = 0.10;
+
+our $Query = <<EOQ;
+SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 GROUP BY ObjectCustomFieldValues.Content
+EOQ
+
+sub cloud{
+  my %tags;
+  my $r = $RT::Handle->SimpleQuery($RTx::Tags::Query);
+
+  return (0, "Internal error: <$r>. Please send bug report.") unless $r;
+
+  my $cloud = RTx::Tags->new(
+	base=>RT->Config->Get('WebPath') . '/Search/Simple.html?q=.tags%3A');
+  while( my $row = $r->fetchrow_arrayref ) {
+    foreach my $k ( split/[,;\s]+/, $row->[1] ){
+      $tags{$k} += $row->[0];
+    }
+  }
+
+  foreach my $k ( keys %tags ){
+    $cloud->add(tag=>$k, url=>$k, count=>$tags{$k}, title=>$tags{$k})
+      if $tags{$k};
+  }
+
+  return $r->err ?
+      (0, "Internal error: <". $r->err .">. Please send bug report.") : $cloud;
+}
+
+
+sub new {
+  my $class = shift;
+  my $self  = {
+	       base   => undef,
+	       levels => 24,
+	       @_,
+               _count => {},
+               _stash => {},
+	      };
+  bless $self, $class;
+  return $self;
+}
+
+sub add {
+  my $self = shift @_;
+  my %args = scalar @_ > 3 ? @_ : (tag=>$_[0], url=>$_[1], count=>$_[2]);
+
+  my $tag = $args{tag};
+  $self->{_stash}->{$tag}->{count} = $args{count};
+  $self->{_stash}->{$tag}->{title} = $args{title} if defined($args{title});
+  $self->{_stash}->{$tag}->{url}   = defined($self->{base}) ? 
+      $self->{base} . $args{url} : $args{url};
+
+  $self->{_count}->{$tag} = $args{count};
+}
+
+sub tags {
+  my($self, $limit) = @_;
+  my $counts = $self->{_count};
+  my @tags = sort { $counts->{$b} <=> $counts->{$a} } keys %$counts;
+  @tags = splice(@tags, 0, $limit) if defined $limit;
+
+  return unless scalar @tags;
+
+  my $min = log($counts->{$tags[-1]});
+  my $max = log($counts->{$tags[0]});
+  my $factor = 1;
+  
+  # special case all tags having the same count
+  if ($max - $min == 0) {
+    $min -= $self->{levels}; }
+  else {
+    $factor = $self->{levels} / ($max - $min);
+  }
+  
+  if (scalar @tags < $self->{levels} ) {
+    $factor *= (scalar @tags/$self->{levels});
+  }
+  my @tag_items;
+  foreach my $tag (sort @tags) {
+     my $tag_item = $self->{_stash}->{$tag};
+     $tag_item->{name} = $tag;
+     $tag_item->{level} = int((log($tag_item->{count}) - $min) * $factor);
+    push @tag_items, $tag_item;
+  }
+  return @tag_items;
+}
+
+sub html {
+  my($self, $limit) = @_;
+  my @tags=$self->tags($limit);
+  my $html = '';
+
+  return($html) unless scalar(@tags);
+
+  foreach my $tag (@tags) {
+    $html .= sprintf qq(<a class="tagcloud%i" href="%s"%s>%s</a>\n),
+      $tag->{level}, $tag->{url},
+	(defined($tag->{title}) ? qq( title="$tag->{title}") : ''),
+	 $tag->{name};
+  }
+  return qq{<div id="htmltagcloud">\n$html</div>};
+}
+
 "Truthiness";
 __END__
 
@@ -81,6 +184,12 @@ Should you wish to make further local customizations, either modify this
 module's code, or use Googleish_Vendor.pm
 
 =back
+
+=head1 AUTHOR
+
+Jerrad Pierce <jpierce@cpan.org>
+
+A customized version of Leon Brocard's HTML::TagCloud is also included.
 
 =head1 LICENSE
 

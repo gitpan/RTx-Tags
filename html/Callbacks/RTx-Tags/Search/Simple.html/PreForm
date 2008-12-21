@@ -1,30 +1,3 @@
 <p>Searching custom field values can be done with <strong>.<em>CFieldName</em>:<em>keyword</em></strong> e.g; <tt>.tags:spam</tt>. Alternatively for tags, use the cloud of links below:</p>
-<div class="titlebox" style="margin:0 10%; padding-bottom: 1em">
-<div class="titlebox-title"><span class="left">Tag Cloud</span></div>
-% print $cloud->html();
-</div>
-<%INIT>
-  use HTML::TagCloud;
 
-  my %tags;
-  my $r = $RT::Handle->SimpleQuery(<<EOQ
-SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 GROUP BY ObjectCustomFieldValues.Content
-EOQ
-);
-
-  return (0, "Internal error: <$r>. Please send bug report.") unless $r;
-
-  my $cloud = HTML::TagCloud->new;
-  while( my $row = $r->fetchrow_arrayref ) {
-    foreach my $k ( split/[,;\s]+/, $row->[1] ){
-      $tags{$k} += $row->[0];
-    }
-  }
-
-  my $base = RT->Config->Get('WebPath') . '/Search/Simple.html?q=.tags%3A';
-  foreach my $k ( keys %tags ){
-      $cloud->add($k, $base.$k, $tags{$k});
-  }
-
-  return (0, "Internal error: <". $r->err .">. Please send bug report.") if $r->err;
-</%INIT>
+<& /Elements/TagCloud &>

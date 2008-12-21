@@ -1,0 +1,13 @@
+<&|/Widgets/TitleBox,
+    title => loc("Tag Cloud") &>
+
+<div class="rtxtags">
+% print $cloud->html();
+</div>
+
+</&>
+
+<%INIT>
+  use RTx::Tags;
+  my $cloud = RTx::Tags::cloud();
+</%INIT>

@@ -1,5 +1,6 @@
 use inc::Module::Install;
-requires 'HTML::TagCloud'      => 0;
+#requires 'HTML::TagCloud' => 0;
+requires 'RT' => 0;
 
 author('Jerrad Pierce <jpierce@cpan.org>');
 abstract('Tag cloud and simple searchable custom fields');

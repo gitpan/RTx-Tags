@@ -1,9 +1,3 @@
-Modify homepage component? 
-	Configurable: Show global tags and/or for selected queues
+See http://rt.cpan.org/Dist/Display.html?Queue=RTx-Tags
 
- 	Cache tags
-
-MassageCustomFields to linkify on display?
-	Is this marginal convenience it worth the performance hit?
-
-Should display of unused tags be configurable, or listed separately?
+Cache tags in homepage component for performance?

@@ -5,9 +5,8 @@ README
 TODO
 html/Callbacks/RTx-Tags/Elements/Header/Head
 html/Callbacks/RTx-Tags/Search/Simple.html/PreForm
+html/Elements/TagCloud
 html/NoAuth/css/cloud.css
-lib/RTx/Tags.pm
-lib/RT/Search/Googleish_Local.pm
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -18,3 +17,6 @@ inc/Module/Install/RTx.pm
 inc/Module/Install/RTx/Factory.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+lib/RT/Search/Googleish_Local.pm
+lib/RTx/Tags.pm
+test.pl
