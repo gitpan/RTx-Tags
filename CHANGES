@@ -1,4 +1,10 @@
-0.10 2008-11-
+0.12
+	Added configuration options to limit what's counted in the cloud.
+	See etc/Tags_Config.pm for details.
+
+	Added support for negation of custom filed searches: -.foo:bar
+
+0.10 2008-12-20
 	Forgot to include the homepage component in .07 AND 0.08 :-/
 
 	Fixed bug #41201 for non-standard installs to locate CSS.

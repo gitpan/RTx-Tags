@@ -3,10 +3,12 @@ MANIFEST
 Makefile.PL
 README
 TODO
+etc/Tags_Config.pm
 html/Callbacks/RTx-Tags/Elements/Header/Head
 html/Callbacks/RTx-Tags/Search/Simple.html/PreForm
 html/Elements/TagCloud
 html/NoAuth/css/cloud.css
+html/Search/TagCloud.html
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm

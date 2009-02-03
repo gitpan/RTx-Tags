@@ -1,5 +1,6 @@
 <&|/Widgets/TitleBox,
-    title => loc("Tag Cloud") &>
+    title => loc("Tag Cloud"),
+    title_href => "Search/TagCloud.html" &>
 
 <div class="rtxtags">
 % print $cloud->html();

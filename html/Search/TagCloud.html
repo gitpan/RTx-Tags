@@ -1,0 +1,23 @@
+<%args>
+$Default => 1
+</%args>
+
+<& /Elements/Header, Title => $title &>
+<& /Ticket/Elements/Tabs, 
+    current_tab => "Search/TagCloud.html?Default=$Default",
+    Title => $title &>
+<&|/Widgets/TitleBox,
+    title => $title &>
+
+<div class="rtxtags">
+% print $cloud->html();
+</div>
+
+</&>
+
+</html>
+<%INIT>
+  use RTx::Tags;
+  my $cloud = RTx::Tags::cloud(default=>$Default);
+  my $title = loc("Tag Cloud");
+</%INIT>

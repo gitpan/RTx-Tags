@@ -1,18 +1,16 @@
 package RTx::Tags;
-our $VERSION = 0.10;
-
-our $Query = <<EOQ;
-SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 GROUP BY ObjectCustomFieldValues.Content
-EOQ
+our $VERSION = 0.12;
 
 sub cloud{
   my %tags;
-  my $r = $RT::Handle->SimpleQuery($RTx::Tags::Query);
 
+  my $cloud = RTx::Tags->new(base=>RT->Config->Get('WebPath') .
+			     '/Search/Simple.html?q=.tags%3A',
+			     @_);
+
+  my $r = $RT::Handle->SimpleQuery($cloud->{_query});
   return (0, "Internal error: <$r>. Please send bug report.") unless $r;
 
-  my $cloud = RTx::Tags->new(
-	base=>RT->Config->Get('WebPath') . '/Search/Simple.html?q=.tags%3A');
   while( my $row = $r->fetchrow_arrayref ) {
     foreach my $k ( split/[,;\s]+/, $row->[1] ){
       $tags{$k} += $row->[0];
@@ -31,15 +29,49 @@ sub cloud{
 
 sub new {
   my $class = shift;
+  my %args = @_;
+  my %opts = $args{default} ? (LinkType=>1) :
+    (LinkType=>1, RT->Config->Get('RTxTags'));
+
   my $self  = {
 	       base   => undef,
 	       levels => 24,
 	       @_,
                _count => {},
                _stash => {},
+	       _query => genSQL(%opts),
 	      };
+  $self->{_base} = '#' unless defined($opts{LinkType});
+
   bless $self, $class;
   return $self;
+}
+
+sub genSQL{
+  my %opts = @_;
+  my $SQLopts;
+
+  my $Query = <<Preamble;
+SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField 
+Preamble
+
+  if( exists($opts{Status}) ){
+    if( defined($opts{Status}) ){
+      $Query .= 'JOIN Tickets ON ObjectCustomFieldValues.ObjectId=Tickets.id ';
+      $SQLopts = 'AND Tickets.Status IN('.
+	join(',', map {"'$_'"} @{$opts{Status}}). ') ';
+    }
+    $opts{Types} = ['RT::Ticket'];
+  }
+
+  if( $opts{Types} ){
+    $SQLopts .= 'AND ObjectCustomFieldValues.ObjectType IN('.
+      join(',', map {"'$_'"} @{$opts{Types}}). ') ';
+  }
+
+  $Query .= <<EOQ;
+WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 $SQLopts GROUP BY ObjectCustomFieldValues.Content;
+EOQ
 }
 
 sub add {
@@ -123,20 +155,14 @@ shown on Search/Simple.html
 
 =head1 INSTALL
 
+=head2 Basic Functionality
+
 =over
-
-=item # 
-
-Install HTML::TagCloud
 
 =item #
 
 Install this module i.e; extract to F<local/plugins/RTx-Tags> & amend
-F<RT_SiteConfig.pm> to include I<RTx::Tags> to C<@Plugins>.
-
-These first steps may be accomplished via CPAN(PLUS) with auto-dependencies.
-
-=item #
+F<RT_SiteConfig.pm> to include I<RTx::Tags> in C<@Plugins>.
 
 No patching necessary! If you've previously applied  SearchCustomField from
 the wiki or email list, or installed version 0.021 of this module, it is
@@ -145,19 +171,32 @@ but it's best to keep RT core files vanilla where possible.
 
 =item #
 
-Create a custom field named C<Tags>. The recommended type is I<Enter one value>
-with I<Applies to Tickets>. The recommended Description is
-I<Freeform annotation for ready searching>.
+Create a custom field named C<Tags>.
+Although you may add tags to any sort of object you want,
+the recommended Type is I<Enter one value> with I<Applies to Tickets>.
+The recommended Description is I<Freeform annotation for ready searching>.
 
 =item #
 
-Apply the Custom Field to the desired queue(s).
+Apply the Custom Field to the desired objects e.g; queue(s).
 
-=item #
+=back
 
-Optionally add I<TagCloud> to C<$HomepageComponents> in F<RT_SiteConfig.pm> if
-you would like users to have the ability to display a Tag Cloud on the front
-page, and not just the Simple Search page.
+=head2 Optional Features
+
+=over
+
+=item *
+
+Add I<TagCloud> to C<$HomepageComponents> in F<RT_SiteConfig.pm> if you would
+like users to have the ability to display a Tag Cloud on the front page,
+and not just the Simple Search page.
+
+=item *
+
+Read the module configuration options, and customize to suit your taste.
+
+  perldoc local/plugins/RTx-Tags/etc/Tags_Config.pm
 
 =back
 
@@ -185,12 +224,19 @@ module's code, or use Googleish_Vendor.pm
 
 =back
 
+=head1 SEE ALSO
+
+L<RT::Search::Googleish_Local>
+
 =head1 AUTHOR
 
 Jerrad Pierce <jpierce@cpan.org>
 
-A customized version of Leon Brocard's HTML::TagCloud is also included.
+A heavily customized version of Leon Brocard's HTML::TagCloud v0.34
+has been inlined since v0.10.
 
 =head1 LICENSE
 
 The same terms as perl itself.
+
+=cut
