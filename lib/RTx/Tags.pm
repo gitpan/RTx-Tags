@@ -1,20 +1,17 @@
 package RTx::Tags;
-our $VERSION = 0.12;
+our $VERSION = 0.14;
 
 sub cloud{
   my %tags;
 
   my $cloud = RTx::Tags->new(base=>RT->Config->Get('WebPath') .
-			     '/Search/Simple.html?q=.tags%3A',
-			     @_);
+			     '/Search/Simple.html?q=.tags%3A' , @_);
 
   my $r = $RT::Handle->SimpleQuery($cloud->{_query});
   return (0, "Internal error: <$r>. Please send bug report.") unless $r;
-
   while( my $row = $r->fetchrow_arrayref ) {
     foreach my $k ( split/[,;\s]+/, $row->[1] ){
-      $tags{$k} += $row->[0];
-    }
+      $tags{$k} += $row->[0]; }
   }
 
   foreach my $k ( keys %tags ){
@@ -30,8 +27,12 @@ sub cloud{
 sub new {
   my $class = shift;
   my %args = @_;
-  my %opts = $args{default} ? (LinkType=>1) :
-    (LinkType=>1, RT->Config->Get('RTxTags'));
+
+  my %opts = $args{tagsRaw_} ? (tagsLinkType=>1, %args) : 
+    (tagsLinkType=>1,
+     (map{ $_=>RT->Config->Get($_) }
+      qw/tagsRaw tagsStatus tagsTypes tagsLinkType/),
+     %args);
 
   my $self  = {
 	       base   => undef,
@@ -41,7 +42,7 @@ sub new {
                _stash => {},
 	       _query => genSQL(%opts),
 	      };
-  $self->{_base} = '#' unless defined($opts{LinkType});
+  $self->{base} = '#' unless defined($opts{tagsLinkType});
 
   bless $self, $class;
   return $self;
@@ -51,27 +52,27 @@ sub genSQL{
   my %opts = @_;
   my $SQLopts;
 
-  my $Query = <<Preamble;
-SELECT COUNT(ObjectCustomFieldValues.Content), ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField 
-Preamble
+  my $Query = 'SELECT COUNT(ObjectCustomFieldValues.Content), '.
+              'ObjectCustomFieldValues.Content FROM ObjectCustomFieldValues '.
+              'JOIN CustomFields ON CustomFields.Id=ObjectCustomFieldValues.CustomField ';
 
-  if( exists($opts{Status}) ){
-    if( defined($opts{Status}) ){
+  if( exists($opts{tagsStatus}) ){
+    if( defined($opts{tagsStatus}) ){
       $Query .= 'JOIN Tickets ON ObjectCustomFieldValues.ObjectId=Tickets.id ';
       $SQLopts = 'AND Tickets.Status IN('.
-	join(',', map {"'$_'"} @{$opts{Status}}). ') ';
+	join(',', map {"'$_'"} @{$opts{tagsStatus}}). ') ';
     }
-    $opts{Types} = ['RT::Ticket'];
+    $opts{tagsTypes} = ['RT::Ticket'];
   }
 
-  if( $opts{Types} ){
+  if( $opts{tagsTypes} ){
     $SQLopts .= 'AND ObjectCustomFieldValues.ObjectType IN('.
-      join(',', map {"'$_'"} @{$opts{Types}}). ') ';
+      join(',', map {"'$_'"} @{$opts{tagsTypes}}). ') ';
   }
 
-  $Query .= <<EOQ;
-WHERE CustomFields.Name='Tags' AND ObjectCustomFieldValues.Disabled=0 $SQLopts GROUP BY ObjectCustomFieldValues.Content;
-EOQ
+  $Query .= "WHERE CustomFields.Name='Tags' AND ".
+            "ObjectCustomFieldValues.Disabled=0 $SQLopts ".
+            "GROUP BY ObjectCustomFieldValues.Content";
 }
 
 sub add {
@@ -138,20 +139,26 @@ sub html {
 "Truthiness";
 __END__
 
+=pod
+
 =head1 NAME
 
 RTx::Tags - Tag Cloud support for RT with simple-searchable custom fields.
 
 =head1 DESCRIPTION
 
-This module uses portions of L<HTML::TagCloud> to provide a tag cloud on
-Search/Simple.html The cloud consists of the values (split on commas,
-semi-colons and whitespace) for B<all objects> with the C<Tags> custom
-field.
+This module provides customizable tag clouds and extended search functions.
+The cloud--which displays comma or semi-colon delimited values stored in
+custom fields named I<Tags>--is shown on F<Search/Simple.html>,
+as is a brief summary of the new search features.
 
-In addition to the cloud, this module provides support for Simple Searchable
-Custom Fields witha Local overlay. An explanation of this feature is also
-shown on Search/Simple.html
+Clicking the title of the tag cloud takes you to an alternate display at
+F<Search/TagCloud.html>, which includes an uncustomized cloud (I<Global>),
+and individual clouds for every class of object with a tags custom field.
+
+Lastly, this module also make your simple search terms persist in the
+input field across queries. A generally useful feature, this facilitates
+drilling down through search results or cloud clicks.
 
 =head1 INSTALL
 

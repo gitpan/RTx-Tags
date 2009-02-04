@@ -1,5 +1,6 @@
-#Only display 'Active' Tickets
-#Set(%RTxTags, (Status=>\@RT::ActiveStatus);
+#You should edit Tags_SiteConfig.pm instead of this file,
+#which may be clobbered on module upgrade
+Set($tagsRaw=>1);
 
 1;
 __END__
@@ -8,43 +9,46 @@ __END__
 
 =head1 OPTIONS
 
-You may configure RTX::Tags by setting %RTxTags in
-F<local/etc/Tags_Config.pm> or the default location of this document:
-F<local/plugins/RTx-Tags/etc/Tags_Config.pm>.
+You may configure RTX::Tags by setting variables in
+F<local/etc/Tags_SiteConfig.pm>, or alternatively
+F<local/plugins/RTx-Tags/etc/Tags_SiteConfig.pm>.
 
-Options only affect the tag cloud displayed on F<Search/Simple.html>
-and the homepage component. You can see the default view by clicking
-the title link.
-
-Recognized keys are:
+Recognized variables are:
 
 =over
 
-=item B<Types>
+=item B<$tagsTypes>
 
 Accepts an arrayref of object types to limit the count to.
 By default RTx::Tags will count tags for any object in RT.
 
 Of course, the links for each tag will only display corresponding I<tickets>.
 
-=item B<LinkType>
+=item B<$tagsLinkType>
 
 If this is set to undef, tags are not linked to ticket search results.
 This might be useful if your cloud features (many instances of) types
 other than tickets.
 
-=item B<Status>
+=item B<$tagsStatus>
 
 Accepts an arrayref of statuses to limit the count to,
-with the side-effect of forcibly limiting B<Types> to I<RT::Ticket>.
+with the side-effect of forcibly limiting B<$tagsTypes> to I<RT::Ticket>.
 
 If you want to count tickets regardless of status you could use
-C<Types=E<gt>'RT::Ticket'>, but C<Status=E<gt>undef> is probably clearer.
+C<$tagsTypes=E<gt>'RT::Ticket'>, but C<$tagsStatus=E<gt>undef>
+is probably clearer.
 
 A particularly handy incantantion is:
 
   #Only display 'Active' Tickets
-  Set(%RTxTags, (Status=>\@RT::ActiveStatus);
+  Set($tagsStatus=>\@RT::ActiveStatus);
+
+=item B<$tagsRaw>
+
+Enabled by default, a false setting will prevent the display of the
+"Global" cloud on F<Search/TagCloud.html>. This cloud which provides
+a view of the uncustomized cloud i.e; uses all of the defaults shown here.
 
 =back
 

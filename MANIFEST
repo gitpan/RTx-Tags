@@ -6,6 +6,7 @@ TODO
 etc/Tags_Config.pm
 html/Callbacks/RTx-Tags/Elements/Header/Head
 html/Callbacks/RTx-Tags/Search/Simple.html/PreForm
+html/Elements/SimpleSearch
 html/Elements/TagCloud
 html/NoAuth/css/cloud.css
 html/Search/TagCloud.html

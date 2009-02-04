@@ -1,23 +1,28 @@
 <%args>
-$Default => 1
+$tagsRaw => undef
 </%args>
-
-<& /Elements/Header, Title => $title &>
-<& /Ticket/Elements/Tabs, 
-    current_tab => "Search/TagCloud.html?Default=$Default",
-    Title => $title &>
-<&|/Widgets/TitleBox,
-    title => $title &>
-
-<div class="rtxtags">
-% print $cloud->html();
-</div>
-
-</&>
-
-</html>
 <%INIT>
   use RTx::Tags;
-  my $cloud = RTx::Tags::cloud(default=>$Default);
-  my $title = loc("Tag Cloud");
+  $tagsRaw = defined($tagsRaw) ? $tagsRaw : RT->Config->Get('tagsRaw');
+  my $title = loc("Tag Clouds");
 </%INIT>
+
+<& /Elements/Header, Title=>$title &>
+<& /Ticket/Elements/Tabs, Title=>$title &>
+
+<& /Elements/TagCloud, Title=>'Global',TitleHREF=>undef, tagsRaw_=>$tagsRaw &>
+
+  <%perl>
+  my $r = $RT::Handle->SimpleQuery('SELECT DISTINCT ObjectCustomFieldValues.ObjectType FROM ObjectCustomFieldValues');
+  return (0, "Internal error: <$r>. Please send bug report.") unless $r;
+
+  #XXX skip iff count == 1 & $tagsRaw
+  while( my $row = $r->fetchrow_arrayref ) {
+    my $nom = $row->[0];
+    $nom =~ s/^RT:://;
+  </%perl>
+  <& /Elements/TagCloud, Title=>$nom, TitleHREF=>undef, tagsRaw_=>1,
+     tagsTypes=>[$row->[0]], tagsLinkType=>$nom eq 'Ticket' ? 1 : undef &>
+% }
+
+</html>
