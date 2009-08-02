@@ -1,8 +1,13 @@
-0.13	2009-02-04
-	!! Fixed documentation to indicate user should use Tags_SiteConfig.pm
-	to customize
+0.20	2009-08-02
+	Changed cloud links to .Tags for out of the box Postgres compatability.
 
-	Modified configuration options
+	Added autocompletion for tag values (actually contents).
+
+0.14	2009-02-04
+	!! Fixed documentation to indicate user should use Tags_SiteConfig.pm
+	to customize.
+
+	Modified configuration options.
 
 	Added link from cloud title to new Search/TagCloud.html, it displays
 	an optional uncustomized tag cloud, plus per-class clouds.

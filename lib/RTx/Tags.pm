@@ -1,11 +1,11 @@
 package RTx::Tags;
-our $VERSION = 0.14;
+our $VERSION = 0.20;
 
 sub cloud{
   my %tags;
 
   my $cloud = RTx::Tags->new(base=>RT->Config->Get('WebPath') .
-			     '/Search/Simple.html?q=.tags%3A' , @_);
+			     '/Search/Simple.html?q=.Tags%3A' , @_);
 
   my $r = $RT::Handle->SimpleQuery($cloud->{_query});
   return (0, "Internal error: <$r>. Please send bug report.") unless $r;
@@ -68,6 +68,10 @@ sub genSQL{
   if( $opts{tagsTypes} ){
     $SQLopts .= 'AND ObjectCustomFieldValues.ObjectType IN('.
       join(',', map {"'$_'"} @{$opts{tagsTypes}}). ') ';
+  }
+
+  if( $opts{tagStem} ){
+    $SQLopts .= "AND ObjectCustomFieldValues.Content LIKE '%$opts{tagStem}%' ";
   }
 
   $Query .= "WHERE CustomFields.Name='Tags' AND ".
@@ -143,7 +147,7 @@ __END__
 
 =head1 NAME
 
-RTx::Tags - Tag Cloud support for RT with simple-searchable custom fields.
+RTx::Tags - Tag Cloud support for RT via simple-searchable custom fields & more
 
 =head1 DESCRIPTION
 
@@ -168,24 +172,25 @@ drilling down through search results or cloud clicks.
 
 =item #
 
-Install this module i.e; extract to F<local/plugins/RTx-Tags> & amend
-F<RT_SiteConfig.pm> to include I<RTx::Tags> in C<@Plugins>.
+Install this module in the usual way, and amend F<RT_SiteConfig.pm>
+to include I<RTx::Tags> in C<@Plugins>.
 
-No patching necessary! If you've previously applied  SearchCustomField from
-the wiki or email list, or installed version 0.021 of this module, it is
-recomended that you revert the patch. No harm will come from not doing so,
-but it's best to keep RT core files vanilla where possible.
+No patching necessary! If you've previously applied I<SearchCustomField>
+from the wiki or email list, or installed version 0.021 of this module,
+it is recomended that you revert the patch. No harm will come from not
+doing so, but it's best to keep RT core files vanilla where possible.
 
 =item #
 
-Create a custom field named C<Tags>.
-Although you may add tags to any sort of object you want,
+Create a custom field named I<Tags>.
+Although Tags may be any type of custom field to whichever objects you want,
 the recommended Type is I<Enter one value> with I<Applies to Tickets>.
 The recommended Description is I<Freeform annotation for ready searching>.
 
 =item #
 
-Apply the Custom Field to the desired objects e.g; queue(s).
+Apply I<Tags> to the desired objects e.g; queue(s),
+or make it a global custom field.
 
 =back
 
@@ -198,6 +203,13 @@ Apply the Custom Field to the desired objects e.g; queue(s).
 Add I<TagCloud> to C<$HomepageComponents> in F<RT_SiteConfig.pm> if you would
 like users to have the ability to display a Tag Cloud on the front page,
 and not just the Simple Search page.
+
+=item *
+
+Create (or change an existing) I<Tags> as 
+I<Enter one value with autocompletion>.
+
+Note: I<Enter multiple values> should also work, though it is untested.
 
 =item *
 
@@ -229,6 +241,11 @@ Search/Googleish_Local.pm will likely not result in behavior you desire.
 Should you wish to make further local customizations, either modify this
 module's code, or use Googleish_Vendor.pm
 
+=item *
+
+If using Postgres, you may want to make custom field searches case-insensitive
+http://lists.bestpractical.com/pipermail/rt-users/2009-January/056645.html
+
 =back
 
 =head1 SEE ALSO
@@ -241,6 +258,8 @@ Jerrad Pierce <jpierce@cpan.org>
 
 A heavily customized version of Leon Brocard's HTML::TagCloud v0.34
 has been inlined since v0.10.
+
+Modified portions of RT 3.8.x are also included.
 
 =head1 LICENSE
 
