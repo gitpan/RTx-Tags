@@ -1,5 +1,5 @@
 package RTx::Tags;
-our $VERSION = 0.20;
+our $VERSION = 0.21;
 
 sub cloud{
   my %tags;
@@ -250,7 +250,7 @@ http://lists.bestpractical.com/pipermail/rt-users/2009-January/056645.html
 
 =head1 SEE ALSO
 
-L<RT::Search::Googleish_Local>
+L<RT::Search::Googleish_Local>, L<local/plugins/RTx-Tags/etc/Tags_Config.pm>
 
 =head1 AUTHOR
 

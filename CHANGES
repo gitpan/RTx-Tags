@@ -1,3 +1,9 @@
+0.21	2009-08-02
+
+	Tweaked non-complete of short terms to yield no display.
+
+	Added configuration option for minimum-length completion stem.
+
 0.20	2009-08-02
 	Changed cloud links to .Tags for out of the box Postgres compatability.
 

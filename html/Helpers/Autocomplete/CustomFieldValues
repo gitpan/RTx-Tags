@@ -80,19 +80,22 @@ $CustomFieldObj->Load( $CustomField );
 my $values;
 
 if( uc($CustomFieldObj->Name) eq 'TAGS' ){
-  return unless length($Value) > 2;
-  
-  my %tags;
-  my $cloud = RTx::Tags->new(tagStem=>$Value);
-
-  my $r = $RT::Handle->SimpleQuery($cloud->{_query});
-  while( my $row = $r->fetchrow_arrayref ) {
-    foreach my $k ( split/[,;\s]+/, $row->[1] ){
-      $tags{$k} += $row->[0] if $k =~ /$Value/; }
+  if( length($Value) >= RT->Config->Get('tagsComplete') ){
+    my %tags;
+    my $cloud = RTx::Tags->new(tagStem=>$Value);
+    
+    my $r = $RT::Handle->SimpleQuery($cloud->{_query});
+    while( my $row = $r->fetchrow_arrayref ) {
+      foreach my $k ( split/[,;\s]+/, $row->[1] ){
+	$tags{$k} += $row->[0] if $k =~ /$Value/; }
+    }
+    
+    #sort alphabetic or frequency? is currently random, but simple code...
+    $values = bless \%tags, 'FakeClass';
   }
-  
-  #sort alphabetic or frequency? is currently random, but simple code...
-  $values = bless \%tags, 'FakeClass';
+  else{
+    $values = bless {}, 'FakeClass';
+  }
 }
 else{
   $values = $CustomFieldObj->Values;

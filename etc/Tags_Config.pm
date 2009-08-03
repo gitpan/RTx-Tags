@@ -1,6 +1,7 @@
 #You should edit Tags_SiteConfig.pm instead of this file,
 #which may be clobbered on module upgrade
 Set($tagsRaw=>1);
+Set($tagsComplete=>3);
 
 1;
 __END__
@@ -49,6 +50,11 @@ A particularly handy incantantion is:
 Enabled by default, a false setting will prevent the display of the
 "Global" cloud on F<Search/TagCloud.html>. This cloud which provides
 a view of the uncustomized cloud i.e; uses all of the defaults shown here.
+
+=item B<$tagsComplete>
+
+Minimum number of characters required before RTx::Tags returns possible
+completions. The default is 3.
 
 =back
 
