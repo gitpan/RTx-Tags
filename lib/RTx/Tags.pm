@@ -1,5 +1,5 @@
 package RTx::Tags;
-our $VERSION = 0.21;
+our $VERSION = 0.25;
 
 sub cloud{
   my %tags;
@@ -149,20 +149,27 @@ __END__
 
 RTx::Tags - Tag Cloud support for RT via simple-searchable custom fields & more
 
-=head1 DESCRIPTION
+=head1 SYNOPSIS
 
 This module provides customizable tag clouds and extended search functions.
-The cloud--which displays comma or semi-colon delimited values stored in
-custom fields named I<Tags>--is shown on F<Search/Simple.html>,
+The cloud--which displays whitespace, comma, semi-colon or delimited values
+stored in custom fields named I<Tags>--is shown on F<Search/Simple.html>,
 as is a brief summary of the new search features.
 
-Clicking the title of the tag cloud takes you to an alternate display at
-F<Search/TagCloud.html>, which includes an uncustomized cloud (I<Global>),
+=head1 DESCRIPTION
+
+Tag clouds are shown on the Simple Search page, and optionally on the front
+page as well. Clicking a tag cloud title takes you to an alternate display
+at F<Search/TagCloud.html>, which includes an uncustomized cloud (I<Global>),
 and individual clouds for every class of object with a tags custom field.
 
-Lastly, this module also make your simple search terms persist in the
-input field across queries. A generally useful feature, this facilitates
-drilling down through search results or cloud clicks.
+In order to make the tag cloud interactive, this module provides a syntax
+for accessing custom fields via Simple Search where C<.I<CFname>:I<value>>
+searches for tickets where the custom field I<CFname> matches I<value>
+
+Lastly, this module also make your Simple Search terms persist in the input
+field across queries. A generally useful feature, this facilitates drilling
+down through search results or cloud clicks.
 
 =head1 INSTALL
 

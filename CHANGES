@@ -1,3 +1,12 @@
+0.25	2009-08-03
+	Corrected autocompletion to include tag values of all tickets,
+	regardless of tagsStatus setting in Tags_SiteConfig.pm. This is what
+	one would expect since completion's most useful for rarely seen vals.
+
+	Slightly cleaner completion implementation to minimize localized code.
+
+	Better (still untested) support for multiple value custom field type.
+
 0.21	2009-08-02
 
 	Tweaked non-complete of short terms to yield no display.

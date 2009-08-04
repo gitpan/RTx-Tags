@@ -2,8 +2,4 @@ See http://rt.cpan.org/Dist/Display.html?Queue=RTx-Tags
 
 Cache tags in homepage component for performance?
 
-User request: Hyphenated tag names
-	Meh
-	Illegal anyhow?
-
 Configurable 'blacklist' of tags to count

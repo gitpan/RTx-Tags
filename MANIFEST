@@ -9,7 +9,7 @@ html/Callbacks/RTx-Tags/Search/Simple.html/PreForm
 html/Elements/EditCustomFieldAutocomplete
 html/Elements/SimpleSearch
 html/Elements/TagCloud
-html/Helpers/Autocomplete/CustomFieldValues
+html/Helpers/Autocomplete/CustomFieldContents
 html/NoAuth/css/cloud.css
 html/Search/TagCloud.html
 inc/Module/Install.pm

@@ -45,25 +45,28 @@
 %# those contributions and any derivatives thereof.
 %# 
 %# END BPS TAGGED BLOCK }}}
+% my($tokens, $helper) = ('', '/Helpers/Autocomplete/CustomFieldValues');
+% if( uc($CustomField->Name) eq 'TAGS' ){
+%  $tokens = q(tokens: [',', ';', '\n']);
+%  $helper = '/Helpers/Autocomplete/CustomFieldContents';
+%}
 % if ( $Multiple ) {
 <textarea cols="<% $Cols %>" rows="<% $Rows %>" name="<% $name %>-Values" id="<% $name %>-Values" ><% $Default %></textarea><div id="<% $name %>-Choices" class="autocomplete"></div>
 <script type="text/javascript">
 new Ajax.Autocompleter(
     "<% $name %>-Values",
     "<% $name %>-Choices",
-    "/Helpers/Autocomplete/CustomFieldValues",
-    { tokens: [ '\n' ] }
+    "<% $helper %>",
+    {<% $tokens || "tokens: [ '\n' ]" |n%>}
 );
 % } else {
-% my $toke = uc($CustomField->Name) eq 'TAGS' ? "tokens: [',', ';']" : '';
-
 <input type="text" id="<% $name %>-Value" name="<% $name %>-Value" value="<% $Default %>"/><div id="<% $name %>-Choices" class="autocomplete"></div>
 <script type="text/javascript">
 new Ajax.Autocompleter(
     "<% $name %>-Value",
     "<% $name %>-Choices",
-    "/Helpers/Autocomplete/CustomFieldValues",
-    { <% $toke |n%> }
+    "<% $helper %>",
+    {<% $tokens |n%>}
 );
 % }
 </script>

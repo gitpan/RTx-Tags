@@ -1,6 +1,3 @@
-%# This should arguably be called CustomFieldContents
-%# but that complicates hooking into the existing system.
-
 %# BEGIN BPS TAGGED BLOCK {{{
 %# 
 %# COPYRIGHT:
@@ -79,10 +76,10 @@ $CustomFieldObj->Load( $CustomField );
 
 my $values;
 
-if( uc($CustomFieldObj->Name) eq 'TAGS' ){
+#if( uc($CustomFieldObj->Name) eq 'TAGS' ){
   if( length($Value) >= RT->Config->Get('tagsComplete') ){
     my %tags;
-    my $cloud = RTx::Tags->new(tagStem=>$Value);
+    my $cloud = RTx::Tags->new(tagStem=>$Value, tagsRaw_=>1);
     
     my $r = $RT::Handle->SimpleQuery($cloud->{_query});
     while( my $row = $r->fetchrow_arrayref ) {
@@ -96,21 +93,6 @@ if( uc($CustomFieldObj->Name) eq 'TAGS' ){
   else{
     $values = bless {}, 'FakeClass';
   }
-}
-else{
-  $values = $CustomFieldObj->Values;
-  $values->Limit(
-		 FIELD           => 'Name',
-		 OPERATOR        => 'LIKE',
-		 VALUE           => $Value,
-		 SUBCLAUSE       => 'autcomplete',
-		);
-  $values->Limit(
-		 ENTRYAGGREGATOR => 'OR',
-		 FIELD           => 'Description',
-		 OPERATOR        => 'LIKE',
-		 VALUE           => $Value,
-		 SUBCLAUSE       => 'autcomplete',
-		);
-}
+#}
+#else{ #Generic freeform autocompletion support }
 </%INIT>
